@@ -1,0 +1,66 @@
+Flame.SampleDensity := 400;        
+Flame.Oversample := 2;                 
+Flame.FilterRadius := 0.4;
+Flame.PreviewHeight := 200;
+Flame.PreviewWidth := 200;                   
+                                      
+
+                                     
+renderMode := 1    
+if (renderMode = 1) then                                                      
+begin                                                                        
+    // Renderer.Width := 854; 
+    // Renderer.Height := 480;
+    Renderer.Width := 1280; 
+    Renderer.Height := 720;
+
+    Renderer.Filename :='C:\Users\audioRack\Documents\apophysis\out2\outxx.png';
+    SetRenderBounds;
+end;                                                                                         
+
+if (renderMode = 0) then Flame.SampleDensity := 1;                                       
+UpdateFlame := False;
+SetActiveTransform(1);
+Transform.Rotate(4);                                                                             
+looped := 0                                                                          
+skipFrames := 10
+skipCount := 0
+frameCount := 10
+fcount := 0                            
+
+rotara := [0.0001,0.001,0.003,0.02,0.07,0.001,0.5,0,0.01,0.1,0.2,0.0001,0,0,0,0,0,0,0,0,0]      
+// main loop (watch if there are multiple rotations with saves that the frame count is divided large)   
+for i := 1 to frameCount do
+begin      
+    print('dbg3 - ' + IntToStr(i));  
+    while not Stopped do
+    begin
+        for j := 1 to Transforms do
+        begin                                 
+            print('dbg4 - ' + IntToStr(skipCount));                    
+            if (skipCount < skipFrames) then
+            begin                
+                // modify the flame here but don't preview it until skipcount hits 
+                skipCount := skipCount + 1;               
+                SetActiveTransform(j);                                              
+                Transform.Rotate(rotara[j]);    
+                print('dbg5' + IntToStr(skipCount) + ' ' + IntToStr(j));
+                print(TimeToStr(Time) + ' preview '+ IntToStr(skipCount));   
+            end;                                                                           
+            else begin                          
+                print('dbg6 reset skip');
+                skipCount := 0;                      
+                Preview;                                            
+            end;
+            if (renderMode = 1) then    
+            begin         
+                print('dbg7');                  
+                fcount := fcount + 1            
+                Renderer.Filename :='C:\Users\audioRack\Documents\apophysis\out2\outxx' + format(' %.5d', [fcount]) + '.png';
+                SetRenderBounds;                                                                               
+                Render;      
+            end;                                           
+        end;
+    end;
+end;
+print('Done.');                                                                  
